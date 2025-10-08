@@ -63,13 +63,6 @@
     transform: scale(1.05);
   }
 
-  #result {
-    font-size: 2em;
-    margin-top: 20px;
-    color: #ffd60a;
-    font-weight: bold;
-  }
-
   .fade {
     animation: fadeIn 0.6s ease-in-out;
   }
@@ -78,11 +71,45 @@
     from {opacity: 0; transform: scale(0.95);}
     to {opacity: 1; transform: scale(1);}
   }
+
+  #results {
+    margin-top: 20px;
+  }
+
+  .name-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    margin: 8px 0;
+    padding: 10px 15px;
+    font-size: 1.3em;
+    color: #ffd60a;
+    gap: 10px;
+    animation: fadeIn 0.6s ease-in-out;
+  }
+
+  .copy-btn {
+    background: #ffd60a;
+    color: #1a1a2e;
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.8em;
+    transition: 0.3s;
+  }
+
+  .copy-btn:hover {
+    background: #ffea00;
+    transform: scale(1.1);
+  }
 </style>
 </head>
 <body>
   <h1>✨ Name Combiner ✨</h1>
-  <p>Enter two names to see your new creation!</p>
+  <p>Enter two names and get fun combos!</p>
 
   <div class="container">
     <input type="text" id="name1" placeholder="First name">
@@ -90,41 +117,49 @@
     <button onclick="combineNames()">Combine</button>
     <button onclick="restart()">Restart</button>
 
-    <div id="result"></div>
+    <div id="results"></div>
   </div>
 
 <script>
 function combineNames() {
   const name1 = document.getElementById("name1").value.trim();
   const name2 = document.getElementById("name2").value.trim();
-  const result = document.getElementById("result");
+  const results = document.getElementById("results");
+  results.innerHTML = "";
 
   if (!name1 || !name2) {
-    result.textContent = "Please enter both names!";
-    result.style.color = "#ff4d6d";
-    result.classList.add("fade");
+    results.innerHTML = "<p style='color:#ff4d6d;'>Please enter both names!</p>";
     return;
   }
 
-  // Mix the names
-  const cut1 = Math.floor(name1.length / 2);
-  const cut2 = Math.floor(name2.length / 2);
-  const combined =
-    name1.slice(0, cut1) + name2.slice(cut2);
+  const combos = [];
 
-  // Make it look nice
-  const finalName = combined.charAt(0).toUpperCase() + combined.slice(1).toLowerCase();
-  result.textContent = `💖 ${finalName} 💖`;
-  result.style.color = "#ffd60a";
-  result.classList.add("fade");
+  // Generate 5 creative name mixes
+  for (let i = 0; i < 5; i++) {
+    const cut1 = Math.floor(Math.random() * name1.length);
+    const cut2 = Math.floor(Math.random() * name2.length);
+    let combined = name1.slice(0, cut1) + name2.slice(cut2);
+    combined = combined.charAt(0).toUpperCase() + combined.slice(1).toLowerCase();
+    combos.push(combined);
+  }
+
+  combos.forEach(name => {
+    const div = document.createElement("div");
+    div.className = "name-option";
+    div.innerHTML = `${name} <button class="copy-btn" onclick="copyName('${name}')">Copy</button>`;
+    results.appendChild(div);
+  });
+}
+
+function copyName(name) {
+  navigator.clipboard.writeText(name);
+  alert(`Copied "${name}" to clipboard!`);
 }
 
 function restart() {
   document.getElementById("name1").value = "";
   document.getElementById("name2").value = "";
-  const result = document.getElementById("result");
-  result.textContent = "";
-  result.classList.remove("fade");
+  document.getElementById("results").innerHTML = "";
 }
 </script>
 </body>
