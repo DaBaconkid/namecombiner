@@ -134,13 +134,20 @@ function combineNames() {
 
   const combos = [];
 
-  // Generate 5 creative name mixes
   for (let i = 0; i < 5; i++) {
-    const cut1 = Math.floor(Math.random() * name1.length);
-    const cut2 = Math.floor(Math.random() * name2.length);
+    let cut1 = Math.floor(Math.random() * name1.length);
+    let cut2 = Math.floor(Math.random() * name2.length);
     let combined = name1.slice(0, cut1) + name2.slice(cut2);
-    combined = combined.charAt(0).toUpperCase() + combined.slice(1).toLowerCase();
-    combos.push(combined);
+
+    // Ensure names aren't too short
+    while (combined.length < 4) {
+      cut1 = Math.floor(Math.random() * name1.length);
+      cut2 = Math.floor(Math.random() * name2.length);
+      combined = name1.slice(0, cut1) + name2.slice(cut2);
+    }
+
+    const finalName = combined.charAt(0).toUpperCase() + combined.slice(1).toLowerCase();
+    combos.push(finalName);
   }
 
   combos.forEach(name => {
